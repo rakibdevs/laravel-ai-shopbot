@@ -1,0 +1,60 @@
+{
+    "name": "rakibdevs/laravel-ai-shopbot",
+    "description": "A plug-and-play AI shopping chatbot for Laravel — bring your own product provider.",
+    "type": "library",
+    "version": "1.0.0",
+    "keywords": [
+        "laravel",
+        "chatbot",
+        "ai",
+        "ecommerce",
+        "openai",
+        "anthropic"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Md. Rakibul Islam",
+            "email": "rakib1708@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "illuminate/database": "^10.0|^11.0|^12.0",
+        "illuminate/http": "^10.0|^11.0|^12.0",
+        "illuminate/cache": "^10.0|^11.0|^12.0",
+        "illuminate/routing": "^10.0|^11.0|^12.0",
+        "illuminate/console": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "pestphp/pest": "^2.0|^3.0",
+        "mockery/mockery": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rakibdevs\\AiShopbot\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rakibdevs\\AiShopbot\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rakibdevs\\AiShopbot\\AiShopbotServiceProvider"
+            ],
+            "aliases": {
+                "AiShopbot": "Rakibdevs\\AiShopbot\\Facades\\AiShopbot"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
