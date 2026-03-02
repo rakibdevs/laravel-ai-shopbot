@@ -21,12 +21,25 @@ class ChatbotServiceTest extends TestCase
         return [AiShopbotServiceProvider::class];
     }
 
-    protected function defineEnvironment($app): void
+    // protected function defineEnvironment($app): void
+    // {
+    //     $app['config']->set('ai_shopbot.product_provider', \Rakibdevs\AiShopbot\Providers\StaticProductProvider::class);
+    //     $app['config']->set('ai_shopbot.ai_provider', 'openai');
+    //     $app['config']->set('ai_shopbot.openai.api_key', 'test-key');
+    //     $app['config']->set('cache.default', 'array');
+    // }
+
+    protected function getEnvironmentSetUp($app): void
     {
-        $app['config']->set('ai_shopbot.product_provider', \Rakibdevs\AiShopbot\Providers\StaticProductProvider::class);
+        $app['config']->set('ai_shopbot.product_provider', \Rakibdevs\AiShopbot\Providers\Product\StaticProductProvider::class);
         $app['config']->set('ai_shopbot.ai_provider', 'openai');
         $app['config']->set('ai_shopbot.openai.api_key', 'test-key');
+
         $app['config']->set('cache.default', 'array');
+        $app['config']->set('cache.stores.array', [
+            'driver'    => 'array',
+            'serialize' => false,
+        ]);
     }
 
     protected function setUp(): void
@@ -37,7 +50,7 @@ class ChatbotServiceTest extends TestCase
         $this->app->bind(AiProvider::class, function () {
             return Mockery::mock(AiProvider::class, function (MockInterface $m) {
                 $m->shouldReceive('chat')
-                  ->andReturn("Here are some products I found for you!");
+                    ->andReturn("Here are some products I found for you!");
             });
         });
     }
@@ -63,12 +76,12 @@ class ChatbotServiceTest extends TestCase
         /** @var MockInterface|ProductProvider $provider */
         $provider = Mockery::mock(ProductProvider::class);
         $provider->shouldReceive('search')
-                 ->with('phone', 5)
-                 ->andReturn(collect([
-                     new ProductData(1, 'Smartphone', 'smartphone', 299.0, 249.0, 10, true),
-                 ]));
+            ->with('phone', 5)
+            ->andReturn(collect([
+                new ProductData(1, 'Smartphone', 'smartphone', 299.0, 249.0, 10, true),
+            ]));
 
-        $this->app->bind(ProductProvider::class, fn () => $provider);
+        $this->app->bind(ProductProvider::class, fn() => $provider);
 
         /** @var ChatbotService $chatbot */
         $chatbot  = $this->app->make(ChatbotService::class);

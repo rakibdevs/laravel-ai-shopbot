@@ -10,16 +10,11 @@ use Rakibdevs\AiShopbot\Contracts\AiProvider;
 use Rakibdevs\AiShopbot\Exceptions\AiProviderException;
 
 /**
- * Google Gemini AI Provider — FREE TIER
+ * Google Gemini AI Provider
  * ======================================
- * No credit card required. Get your key at: https://aistudio.google.com
- *
- * Free limits (as of Feb 2026):
- *   - gemini-2.5-flash : 15 RPM, 1,000 RPD
- *   - gemini-2.5-flash-lite : 30 RPM, 1,500 RPD  ← best for high volume
  *
  * .env setup:
- *   CHATBOT_AI_PROVIDER=gemini
+ *   SHOPBOT_AI_PROVIDER=gemini
  *   GEMINI_API_KEY=AIzaSy...
  *   GEMINI_MODEL=gemini-2.5-flash
  */
@@ -77,7 +72,7 @@ class GeminiProvider implements AiProvider
                 $error = $response->json('error.message', 'Unknown error');
                 $status = $response->status();
 
-                Log::error('[AiChatbot] Gemini error', [
+                Log::error('[AiShopbot] Gemini error', [
                     'status'  => $status,
                     'message' => $error,
                     'model'   => $model,

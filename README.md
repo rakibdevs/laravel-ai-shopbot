@@ -2,7 +2,7 @@
 
 > A plug-and-play AI shopping chatbot for Laravel — **bring your own product provider**.
 
-![PHP](https://img.shields.io/badge/PHP-8.1%2B-blue) ![Laravel](https://img.shields.io/badge/Laravel-10%2F11-red) ![License](https://img.shields.io/badge/license-MIT-green)
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-blue) ![Laravel](https://img.shields.io/badge/Laravel-10%2F12-red) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
@@ -56,7 +56,7 @@ The package ships with three built-in providers:
 |---|---|
 | `ActiveEcommerceProductProvider` | You use the Active eCommerce Laravel CMS |
 | `EloquentProductProvider` | You have a standard Eloquent `Product` model |
-| `StaticProductProvider` | Testing / demo |
+| `LocalProductProvider` | Testing / demo |
 
 Set it in `config/ai_shopbot.php`:
 
@@ -94,12 +94,12 @@ use Illuminate\Support\Collection;
 use Rakibdevs\AiShopbot\Contracts\ProductData;
 use Rakibdevs\AiShopbot\Contracts\ProductProvider;
 
-class ShopifyProductProvider implements ProductProvider
+class CustomProductProvider implements ProductProvider
 {
     public function search(string $query, int $limit = 5): Collection
     {
-        // Call Shopify GraphQL, your own DB, Elasticsearch — anything!
-        $results = ShopifyClient::searchProducts($query, $limit);
+        // Call Custom GraphQL, your own DB, Elasticsearch — anything!
+        $results = CustomClient::searchProducts($query, $limit);
 
         return collect($results)->map(fn ($item) => new ProductData(
             id:              $item['id'],
@@ -124,16 +124,16 @@ class ShopifyProductProvider implements ProductProvider
 Register it in `config/ai_shopbot.php`:
 
 ```php
-'product_provider' => \App\Chatbot\ShopifyProductProvider::class,
+'product_provider' => \App\Chatbot\CustomProductProvider::class,
 ```
 
 Or override in `AppServiceProvider`:
 
 ```php
 use Rakibdevs\AiShopbot\Contracts\ProductProvider;
-use App\Chatbot\ShopifyProductProvider;
+use App\Chatbot\CustomProductProvider;
 
-$this->app->bind(ProductProvider::class, ShopifyProductProvider::class);
+$this->app->bind(ProductProvider::class, CustomProductProvider::class);
 ```
 
 A copy-paste stub lives at `stubs/MyProductProvider.php`.
@@ -210,10 +210,10 @@ $response = AiShopbot::processMessage($session, 'Show me wireless headphones und
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/chatbot/session` | Start session, get greeting + featured |
-| `POST` | `/api/chatbot/message` | Send message, receive AI reply + products |
-| `GET`  | `/api/chatbot/suggest?q=...` | Live search suggestions |
-| `GET`  | `/api/chatbot/featured` | Featured products |
+| `POST` | `/api/shopbot/session` | Start session, get greeting + featured |
+| `POST` | `/api/shopbot/message` | Send message, receive AI reply + products |
+| `GET`  | `/api/shopbot/suggest?q=...` | Live search suggestions |
+| `GET`  | `/api/shopbot/featured` | Featured products |
 
 Route prefix is configurable via `config/ai_shopbot.php → route.prefix`.
 
@@ -223,10 +223,10 @@ Route prefix is configurable via `config/ai_shopbot.php → route.prefix`.
 
 ```bash
 # Test a query
-php artisan chatbot:test --query="wireless headphones"
+php artisan shopbot:test --query="wireless headphones"
 
 # Show bound providers
-php artisan chatbot:test --provider
+php artisan shopbot:test --provider
 ```
 
 ---

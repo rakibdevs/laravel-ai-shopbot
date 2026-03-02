@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Rakibdevs\AiShopbot\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Rakibdevs\AiShopbot\Services\ChatbotService;
 
-class ChatbotTestCommand extends Command
+class ShopbotTestCommand extends Command
 {
-    protected $signature   = 'chatbot:test {--query= : Test a product search query} {--provider : Show which providers are bound}';
+    protected $signature   = 'shopbot:test {--query= : Test a product search query} {--provider : Show which providers are bound}';
     protected $description = 'Test the AI chatbot from the command line.';
 
     public function handle(ChatbotService $chatbot): int
@@ -41,7 +42,7 @@ class ChatbotTestCommand extends Command
             $headers = ['ID', 'Name', 'Price', 'Stock', 'In Stock'];
             $rows    = array_map(fn ($p) => [
                 $p['id'],
-                \Str::limit($p['name'], 35),
+                Str::limit($p['name'], 35),
                 $p['discounted_price'],
                 $p['stock'],
                 $p['in_stock'] ? '✓' : '✗',

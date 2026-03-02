@@ -45,7 +45,7 @@ return [
     | AI Provider
     |--------------------------------------------------------------------------
     |
-    | Options: "openai" | "anthropic"
+    | Options: "openai" | "anthropic" | "gemini" | "ollama"
     |
     | You can register custom drivers via ai_providers map.
     |

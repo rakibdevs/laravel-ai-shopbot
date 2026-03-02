@@ -10,9 +10,8 @@ use Rakibdevs\AiShopbot\Contracts\AiProvider;
 use Rakibdevs\AiShopbot\Exceptions\AiProviderException;
 
 /**
- * Ollama AI Provider — 100% Free, Runs Locally
+ * Ollama AI Provider
  * ==============================================
- * No API key. No internet. No rate limits. No cost.
  *
  * SETUP
  * -----
@@ -25,19 +24,9 @@ use Rakibdevs\AiShopbot\Exceptions\AiProviderException;
  * 3. Ollama starts automatically. Verify: curl http://localhost:11434
  *
  * .env setup:
- *   CHATBOT_AI_PROVIDER=ollama
+ *   SHOPBOT_AI_PROVIDER=ollama
  *   OLLAMA_HOST=http://localhost:11434   (default, change if running remotely)
  *   OLLAMA_MODEL=llama3.2
- *
- * Check which models you have pulled:
- *   curl http://localhost:11434/api/tags
- *   or: ollama list
- *
- * IMPORTANT FOR LARAVEL <-> LOCAL OLLAMA:
- * If your Laravel app runs inside Docker/Sail, use:
- *   OLLAMA_HOST=http://host.docker.internal:11434
- * If running natively (php artisan serve), use:
- *   OLLAMA_HOST=http://127.0.0.1:11434
  */
 class OllamaProvider implements AiProvider
 {
@@ -76,7 +65,7 @@ class OllamaProvider implements AiProvider
                 $status = $response->status();
                 $body   = $response->json();
 
-                Log::error('[AiChatbot] Ollama error', [
+                Log::error('[AiShopbot] Ollama error', [
                     'status' => $status,
                     'body'   => $body,
                     'model'  => $model,

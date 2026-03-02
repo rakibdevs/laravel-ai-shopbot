@@ -80,7 +80,9 @@ class AiShopbotServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        if (config('ai_shopbot.widget.enabled', true)) {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        }
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'ai_shopbot');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'ai_shopbot');
@@ -99,7 +101,7 @@ class AiShopbotServiceProvider extends ServiceProvider
             ], 'ai-shopbot-migrations');
 
             $this->commands([
-                Console\Commands\ChatbotTestCommand::class,
+                Console\Commands\ShopbotTestCommand::class,
             ]);
         }
     }

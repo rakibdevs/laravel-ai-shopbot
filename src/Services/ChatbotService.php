@@ -83,48 +83,6 @@ class ChatbotService
         ];
     }
 
-
-    // -------------------------------------------------------------------------
-    // Product Resolution with Fuzzy Fallback
-    // -------------------------------------------------------------------------
-
-    private function resolveProducts(string $query, string $intent): Collection
-    {
-        $limit = (int) config('ai_chatbot.search.max_results', 5);
-
-        // Category search — extract the category term
-        if ($intent === 'category_search') {
-            if (preg_match('/\bin\s+(?:the\s+)?([a-z\s]{3,25})\s*(?:category|section|department)?/i', $query, $m)) {
-                $results = $this->productProvider->searchByCategory(trim($m[1]), $limit);
-                if ($results->isNotEmpty()) return $results;
-            }
-        }
-
-        // Exact find — try to find by name/slug
-        if ($intent === 'product_find') {
-            if (preg_match('/\b(?:find|get|about|for|the)\s+(.{3,60})$/i', $query, $m)) {
-                $found = $this->productProvider->find(trim($m[1]));
-                if ($found) return collect([$found]);
-            }
-        }
-
-        // Primary full-text search
-        $results = $this->productProvider->search($query, $limit);
-        if ($results->isNotEmpty()) return $results;
-
-        // ── Fuzzy fallback: correct misspellings word-by-word ─────────────────
-        $corrected = $this->fuzzyCorrectQuery($query);
-        if ($corrected) {
-            $fuzzyResults = $this->productProvider->search($corrected, $limit);
-            if ($fuzzyResults->isNotEmpty()) return $fuzzyResults;
-        }
-
-        return collect();
-    }
-
-    
-
-
     /**
      * Autocomplete / quick-suggest endpoint.
      */
@@ -192,6 +150,44 @@ class ChatbotService
         }
 
         return $anyChanged ? implode(' ', $corrected) : '';
+    }
+
+     // -------------------------------------------------------------------------
+    // Product Resolution with Fuzzy Fallback
+    // -------------------------------------------------------------------------
+
+    private function resolveProducts(string $query, string $intent): Collection
+    {
+        $limit = (int) config('ai_chatbot.search.max_results', 5);
+
+        // Category search — extract the category term
+        if ($intent === 'category_search') {
+            if (preg_match('/\bin\s+(?:the\s+)?([a-z\s]{3,25})\s*(?:category|section|department)?/i', $query, $m)) {
+                $results = $this->productProvider->searchByCategory(trim($m[1]), $limit);
+                if ($results->isNotEmpty()) return $results;
+            }
+        }
+
+        // Exact find — try to find by name/slug
+        if ($intent === 'product_find') {
+            if (preg_match('/\b(?:find|get|about|for|the)\s+(.{3,60})$/i', $query, $m)) {
+                $found = $this->productProvider->find(trim($m[1]));
+                if ($found) return collect([$found]);
+            }
+        }
+
+        // Primary full-text search
+        $results = $this->productProvider->search($query, $limit);
+        if ($results->isNotEmpty()) return $results;
+
+        // ── Fuzzy fallback: correct misspellings word-by-word ─────────────────
+        $corrected = $this->fuzzyCorrectQuery($query);
+        if ($corrected) {
+            $fuzzyResults = $this->productProvider->search($corrected, $limit);
+            if ($fuzzyResults->isNotEmpty()) return $fuzzyResults;
+        }
+
+        return collect();
     }
 
     /**

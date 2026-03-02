@@ -1,5 +1,5 @@
 {{--
-    AI Chatbot Widget
+    AI Shopbot Widget
     Include once in your main layout, before </body>:
 
     @include('ai_shopbot::widget.chatbot')

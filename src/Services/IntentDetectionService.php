@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rakibdevs\AiShopbot\Services;
 
 /**
- * IntentDetector
+ * IntentDetectionService
  * ==============
  * Classifies a raw user message into a named intent.
  * Used by ChatbotService to decide whether a product search is needed
