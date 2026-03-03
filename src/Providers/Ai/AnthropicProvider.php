@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rakibdevs\AiShopbot\Providers;
+namespace Rakibdevs\AiShopbot\Providers\Ai;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;

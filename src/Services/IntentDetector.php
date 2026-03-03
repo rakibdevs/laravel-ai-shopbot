@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rakibdevs\AiShopbot\Services;
 
 /**
- * IntentDetectionService
+ * IntentDetector
  * ==============
  * Classifies a raw user message into a named intent.
  * Used by ChatbotService to decide whether a product search is needed
@@ -30,7 +30,7 @@ namespace Rakibdevs\AiShopbot\Services;
  *
  *   $this->app->bind(IntentDetector::class, MyIntentDetector::class);
  */
-class IntentDetectionService
+class IntentDetector
 {
     /**
      * Classify the message and return an intent string.
@@ -101,12 +101,18 @@ class IntentDetectionService
      */
     public function extractProductIdentifier(string $message): ?string
     {
-        if (preg_match(
-            '/\b(?:find|get|details?\s+(?:of|for)|tell\s+me\s+about|show\s+me\s+the|about)\s+(?:the\s+)?(.{3,80}?)(?:\?|$)/i',
-            $message,
-            $m
-        )) {
-            return trim($m[1]);
+        $patterns = [
+            '/\b(?:find|get)\s+(?:the\s+)?(.{3,80}?)(?:\?|$)/i',
+            '/\bdetails?\s+(?:of|for)\s+(?:the\s+)?(.{3,80}?)(?:\?|$)/i',
+            '/\btell\s+me\s+about\s+(?:the\s+)?(.{3,80}?)(?:\?|$)/i',
+            '/\bshow\s+me\s+the\s+(.{3,80}?)(?:\?|$)/i',
+            '/\babout\s+(?:the\s+)?(.{3,80}?)(?:\?|$)/i',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $message, $m)) {
+                return trim($m[1]);
+            }
         }
 
         return null;
@@ -126,18 +132,53 @@ class IntentDetectionService
 
     protected function matchChitchat(string $msg): ?string
     {
-        return preg_match(
-            '/^(thanks?|thank\s+you|thx|cheers|great|ok|okay|got\s+it|perfect|awesome|cool|nice|sounds\s+good|bye|goodbye|see\s+you|cya|yes|no|yep|nope|sure|maybe|alright|right)\s*[.!]?\s*$/i',
-            $msg
-        ) ? 'chitchat' : null;
+        $patterns = [
+            '/^(thanks?|thank\s+you|thx|cheers|great)\s*[.!]?\s*$/i',
+            '/^(ok|okay|got\s+it|perfect|awesome|cool|nice)\s*[.!]?\s*$/i',
+            '/^(sounds\s+good|bye|goodbye|see\s+you|cya)\s*[.!]?\s*$/i',
+            '/^(yes|no|yep|nope|sure|maybe|alright|right)\s*[.!]?\s*$/i',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $msg)) {
+                return 'chitchat';
+            }
+        }
+
+        return null;
     }
 
     protected function matchOffTopic(string $msg): ?string
     {
-        return preg_match(
-            '/\b(weather|forecast|news|headline|politics|election|sport|score|recipe|how\s+to\s+cook|movie|film|music|song|joke|funny|code|program|script|essay|write\s+a\s+poem|translate|capital\s+of|who\s+is\s+(the\s+)?president|prime\s+minister)\b/i',
-            $msg
-        ) ? 'off_topic' : null;
+        $patterns = [
+            // People & titles — catches "who is X", "who was X", "tell me about X"
+            '/\bwho\s+(is|was|are|were)\b/i',
+            '/\b(president|prime\s+minister|minister|chancellor|governor|senator|mayor|king|queen|emperor|ceo\s+of|founder\s+of)\b/i',
+
+            // Geography & facts
+            '/\b(capital\s+of|population\s+of|currency\s+of|located\s+in|flag\s+of|history\s+of|area\s+of)\b/i',
+
+            // News & current events
+            '/\b(weather|forecast|temperature|news|headline|breaking|politics|election|vote|war|conflict|protest)\b/i',
+
+            // Sports & entertainment
+            '/\b(sport|score|match\s+result|cricket|football|soccer|nba|nfl|world\s+cup|movie|film|actor|actress|music|song|album|singer|band)\b/i',
+
+            // General knowledge tasks
+            '/\b(recipe|how\s+to\s+cook|how\s+to\s+make|how\s+to\s+fix|how\s+to\s+install)\b/i',
+            '/\b(joke|funny|riddle|poem|essay|story|translate|definition\s+of|meaning\s+of|explain\s+what)\b/i',
+
+            // Coding / technical
+            '/\b(code|program|script|function|algorithm|debug|error\s+in|how\s+to\s+use\s+[a-z]+\s+(api|sdk|library))\b/i',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $msg)) {
+                return 'off_topic';
+            }
+        }
+
+        return null;
     }
 
     protected function matchStockQuery(string $msg): ?string

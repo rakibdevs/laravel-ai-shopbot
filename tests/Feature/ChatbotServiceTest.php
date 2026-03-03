@@ -21,14 +21,6 @@ class ChatbotServiceTest extends TestCase
         return [AiShopbotServiceProvider::class];
     }
 
-    // protected function defineEnvironment($app): void
-    // {
-    //     $app['config']->set('ai_shopbot.product_provider', \Rakibdevs\AiShopbot\Providers\StaticProductProvider::class);
-    //     $app['config']->set('ai_shopbot.ai_provider', 'openai');
-    //     $app['config']->set('ai_shopbot.openai.api_key', 'test-key');
-    //     $app['config']->set('cache.default', 'array');
-    // }
-
     protected function getEnvironmentSetUp($app): void
     {
         $app['config']->set('ai_shopbot.product_provider', \Rakibdevs\AiShopbot\Providers\Product\StaticProductProvider::class);

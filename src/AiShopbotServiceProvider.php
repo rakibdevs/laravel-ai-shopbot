@@ -13,7 +13,7 @@ use Rakibdevs\AiShopbot\Providers\Ai\OpenAiProvider;
 use Rakibdevs\AiShopbot\Providers\Ai\GeminiProvider;
 use Rakibdevs\AiShopbot\Providers\Ai\OllamaProvider;
 use Rakibdevs\AiShopbot\Services\ChatbotService;
-use Rakibdevs\AiShopbot\Services\IntentDetectionService;
+use Rakibdevs\AiShopbot\Services\IntentDetector;
 
 class AiShopbotServiceProvider extends ServiceProvider
 {
@@ -74,7 +74,7 @@ class AiShopbotServiceProvider extends ServiceProvider
 
         // ── Core Service ──────────────────────────────────────────────────────
         $this->app->singleton(ChatbotService::class);
-        $this->app->singleton(IntentDetectionService::class);
+        $this->app->singleton(IntentDetector::class);
 
     }
 
